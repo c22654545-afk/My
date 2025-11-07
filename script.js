@@ -1,7 +1,7 @@
 // ===== CONFIG - CUSTOMIZE YOUR VALUES HERE =====
 // You can change these values or configure them in Settings > API Keys tab
 const DISCORD_CLIENT_ID = localStorage.getItem("cloud_ai_discord_client_id") || "1436284588946231306";
-const REDIRECT_URI = "https://952509a1-7ac9-482d-a243-bd753432fd7f-00-1ejzpts4fdnog.kirk.replit.dev/";
+const REDIRECT_URI = "https://c22654545-afk.github.io/My/";
 const DISCORD_WEBHOOK_URL = localStorage.getItem("cloud_ai_discord_webhook") || "https://discord.com/api/webhooks/1435925134090305738/dOVTECQedUHnXJT4CeQ51VOzCqdZuC4DYncKmMYXx2-D_JuJqY33NJb1o6wTX35TOLhH";
 const OPENAI_API_KEY = localStorage.getItem("cloud_ai_openai_key") || "";
 const GROQ_API_KEY = localStorage.getItem("cloud_ai_groq_key") || "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";
