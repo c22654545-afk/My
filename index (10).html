@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cloud Ai - Advanced AI Chat Assistant</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- LOGIN PAGE -->
+  <div id="login-page" class="page login-container">
+    <div class="login-card">
+      <div class="login-icon">☁️</div>
+      <h1 class="login-title">Cloud AI</h1>
+      <p class="login-subtitle">Your Advanced AI Chat Assistant</p>
+      <div class="login-features">
+        <div class="feature-item">✨ AI-Powered Conversations</div>
+        <div class="feature-item">💾 Smart Memory System (9999 messages)</div>
+        <div class="feature-item">🔒 Secure Authentication</div>
+        <div class="feature-item">🎨 Dark Mode & Customization</div>
+      </div>
+      <button id="discord-login" class="discord-login-btn">
+        <span class="discord-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+        </span>
+        Continue with Discord
+      </button>
+      <p class="login-privacy">🔐 We only request profile information. No passwords required.</p>
+      <p class="terms-link">By continuing, you agree to our <a href="#" id="show-terms-link">Terms & Privacy Policy</a></p>
+    </div>
+  </div>
+
+  <!-- CHAT PAGE (hidden until login) -->
+  <div id="chat-page" class="page" style="display:none;">
+    <header class="header">
+      <div class="brand">☁️ Cloud Ai</div>
+
+      <div class="controls-right">
+        <div class="top-menu">
+          <button id="menu-btn" class="icon-btn" title="Menu">⋮</button>
+          <div id="menu-dropdown" class="menu-dropdown" aria-hidden="true">
+            <button id="new-chat">✨ New Chat</button>
+            <button id="old-chat">📚 Old Chats</button>
+          </div>
+        </div>
+
+        <div id="profile-area" class="profile" title="Profile"></div>
+        <div id="profile-dropdown" class="profile-dropdown" aria-hidden="true">
+          <button id="settings-btn" class="dropdown-menu-btn">⚙️ Settings</button>
+          <button id="logout-btn" class="logout-btn">🚪 Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="chat-container">
+        <div id="chat-welcome" class="chat-welcome">
+          <div class="welcome-icon">☁️</div>
+          <h1 class="welcome-title">What can I help with?</h1>
+        </div>
+        
+        <div id="chat-box" class="chat-box" aria-live="polite"></div>
+
+        <div class="input-wrapper">
+          <div class="input-area">
+            <textarea id="user-input" placeholder="Ask anything..."></textarea>
+            <button id="send-btn" class="send-icon-btn" title="Send">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+              </svg>
+            </button>
+            <button id="stop-btn" class="stop-icon-btn" style="display:none;" title="Stop">■</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- OLD CHATS MODAL -->
+  <div id="old-chat-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>📚 Old Chats</h3>
+        <button id="close-old-chat" class="secondary">Close</button>
+      </div>
+      <ul id="old-chat-list" class="old-chat-list"></ul>
+      <p class="hint">Right-click (desktop) or long-press (mobile) an item to delete it.</p>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div id="settings-modal" class="modal" style="display:none;">
+    <div class="modal-content settings-content">
+      <div class="modal-header">
+        <h3>⚙️ Settings</h3>
+        <button id="close-settings" class="secondary">Close</button>
+      </div>
+      
+      <!-- Settings Tabs -->
+      <div class="settings-tabs">
+        <button class="settings-tab active" data-tab="personal">👤 Personal</button>
+        <button class="settings-tab" data-tab="general">⚙️ General</button>
+        <button class="settings-tab" data-tab="appearance">🎨 Appearance</button>
+        <button class="settings-tab" data-tab="advanced">🔧 Advanced</button>
+        <button class="settings-tab" data-tab="privacy">📜 Privacy</button>
+        <button class="settings-tab" data-tab="contact">💬 Contact</button>
+      </div>
+
+      <!-- Personal Settings Tab -->
+      <div class="settings-body" id="personal-settings" style="display:block;">
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>👤 Your First Name</h4>
+            <p class="setting-desc">Enter your first name so the AI knows who you are</p>
+          </div>
+          <input type="text" id="user-firstname" class="setting-input" placeholder="Enter your first name">
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>📝 Your Surname</h4>
+            <p class="setting-desc">Enter your surname (last name)</p>
+          </div>
+          <input type="text" id="user-surname" class="setting-input" placeholder="Enter your surname">
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🎂 Your Age</h4>
+            <p class="setting-desc">Enter your age (optional)</p>
+          </div>
+          <input type="number" id="user-age" class="setting-input" placeholder="Enter your age" min="1" max="150">
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🌍 Your Country</h4>
+            <p class="setting-desc">Select your country</p>
+          </div>
+          <select id="user-country" class="setting-input">
+            <option value="">Select Country</option>
+            <option value="pakistan">🇵🇰 Pakistan</option>
+            <option value="india">🇮🇳 India</option>
+            <option value="usa">🇺🇸 United States</option>
+            <option value="uk">🇬🇧 United Kingdom</option>
+            <option value="canada">🇨🇦 Canada</option>
+            <option value="australia">🇦🇺 Australia</option>
+            <option value="germany">🇩🇪 Germany</option>
+            <option value="france">🇫🇷 France</option>
+            <option value="spain">🇪🇸 Spain</option>
+            <option value="italy">🇮🇹 Italy</option>
+            <option value="japan">🇯🇵 Japan</option>
+            <option value="china">🇨🇳 China</option>
+            <option value="south_korea">🇰🇷 South Korea</option>
+            <option value="brazil">🇧🇷 Brazil</option>
+            <option value="mexico">🇲🇽 Mexico</option>
+            <option value="russia">🇷🇺 Russia</option>
+            <option value="turkey">🇹🇷 Turkey</option>
+            <option value="saudi_arabia">🇸🇦 Saudi Arabia</option>
+            <option value="uae">🇦🇪 UAE</option>
+            <option value="egypt">🇪🇬 Egypt</option>
+            <option value="south_africa">🇿🇦 South Africa</option>
+            <option value="nigeria">🇳🇬 Nigeria</option>
+            <option value="bangladesh">🇧🇩 Bangladesh</option>
+            <option value="indonesia">🇮🇩 Indonesia</option>
+            <option value="malaysia">🇲🇾 Malaysia</option>
+            <option value="singapore">🇸🇬 Singapore</option>
+            <option value="philippines">🇵🇭 Philippines</option>
+            <option value="vietnam">🇻🇳 Vietnam</option>
+            <option value="thailand">🇹🇭 Thailand</option>
+            <option value="afghanistan">🇦🇫 Afghanistan</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <button id="save-personal-settings" class="save-settings-btn">💾 Save Personal Settings</button>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🤖 AI Assistant Name</h4>
+            <p class="setting-desc">Give your AI assistant a custom name (e.g., Mary, Alex)</p>
+          </div>
+          <input type="text" id="ai-name" class="setting-input" placeholder="Enter AI name">
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🎭 AI Personality</h4>
+            <p class="setting-desc">Choose how your AI assistant should behave</p>
+          </div>
+          <select id="ai-personality" class="setting-input">
+            <option value="friendly">Friendly & Casual</option>
+            <option value="professional">Professional & Formal</option>
+            <option value="humorous">Humorous & Fun</option>
+            <option value="concise">Concise & Direct</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🌐 AI Language</h4>
+            <p class="setting-desc">AI will respond in this language</p>
+          </div>
+          <select id="ai-language" class="setting-input">
+            <option value="english">English - English</option>
+            <option value="urdu">Urdu - اردو</option>
+            <option value="hindi">Hindi - हिंदी</option>
+            <option value="arabic">Arabic - العربية</option>
+            <option value="spanish">Spanish - Español</option>
+            <option value="french">French - Français</option>
+            <option value="german">German - Deutsch</option>
+            <option value="italian">Italian - Italiano</option>
+            <option value="portuguese">Portuguese - Português</option>
+            <option value="russian">Russian - Русский</option>
+            <option value="japanese">Japanese - 日本語</option>
+            <option value="korean">Korean - 한국어</option>
+            <option value="chinese">Chinese - 中文</option>
+            <option value="turkish">Turkish - Türkçe</option>
+            <option value="dutch">Dutch - Nederlands</option>
+            <option value="polish">Polish - Polski</option>
+            <option value="swedish">Swedish - Svenska</option>
+            <option value="norwegian">Norwegian - Norsk</option>
+            <option value="danish">Danish - Dansk</option>
+            <option value="finnish">Finnish - Suomi</option>
+            <option value="greek">Greek - Ελληνικά</option>
+            <option value="hebrew">Hebrew - עברית</option>
+            <option value="thai">Thai - ไทย</option>
+            <option value="vietnamese">Vietnamese - Tiếng Việt</option>
+            <option value="indonesian">Indonesian - Bahasa Indonesia</option>
+            <option value="malay">Malay - Bahasa Melayu</option>
+            <option value="bengali">Bengali - বাংলা</option>
+            <option value="punjabi">Punjabi - ਪੰਜਾਬੀ</option>
+            <option value="persian">Persian - فارسی</option>
+            <option value="pashto">Pashto - پښتو</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>📏 Response Length</h4>
+            <p class="setting-desc">How long should AI responses be?</p>
+          </div>
+          <select id="response-length" class="setting-input">
+            <option value="short">Short & Brief</option>
+            <option value="medium">Medium (Balanced)</option>
+            <option value="long">Long & Detailed</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- General Settings Tab -->
+      <div class="settings-body" id="general-settings" style="display:none;">
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>💭 Memory</h4>
+            <p class="setting-desc">Enable memory to remember your last 9999 messages across all chats</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="memory-toggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🌙 Dark Theme</h4>
+            <p class="setting-desc">Switch between light and dark mode</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>⚡ Typing Speed</h4>
+            <p class="setting-desc">Adjust AI response typing animation speed</p>
+          </div>
+          <input type="range" id="typing-speed" min="1" max="50" value="12" class="slider">
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>📜 Auto-Scroll</h4>
+            <p class="setting-desc">Automatically scroll to new messages</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="auto-scroll" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>📱 Compact Mode</h4>
+            <p class="setting-desc">Reduce spacing and make UI more compact</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="compact-mode">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>📝 Font Size</h4>
+            <p class="setting-desc">Adjust the size of text in chat</p>
+          </div>
+          <select id="font-size" class="setting-input">
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+            <option value="xlarge">Extra Large</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🔔 Sound Effects</h4>
+            <p class="setting-desc">Play sound when receiving messages</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="sound-effects">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>💾 Auto-Save Chats</h4>
+            <p class="setting-desc">Automatically save conversations</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="auto-save" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>📊 Memory Status</h4>
+            <p class="setting-desc" id="memory-status">Memory: Enabled | Messages: 0 / 9999</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appearance Settings Tab -->
+      <div class="settings-body" id="appearance-settings" style="display:none;">
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🎨 Color Theme</h4>
+            <p class="setting-desc">Choose your preferred color scheme</p>
+          </div>
+          <select id="color-theme" class="setting-input">
+            <option value="default">Default Purple</option>
+            <option value="blue">Ocean Blue</option>
+            <option value="green">Forest Green</option>
+            <option value="orange">Sunset Orange</option>
+            <option value="pink">Rose Pink</option>
+            <option value="red">Ruby Red</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>💬 Chat Bubble Style</h4>
+            <p class="setting-desc">Choose message bubble appearance</p>
+          </div>
+          <select id="bubble-style" class="setting-input">
+            <option value="rounded">Rounded</option>
+            <option value="sharp">Sharp Corners</option>
+            <option value="minimal">Minimal</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>✨ Animation Effects</h4>
+            <p class="setting-desc">Enable smooth animations</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="animations" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🌈 Background Style</h4>
+            <p class="setting-desc">Choose background appearance</p>
+          </div>
+          <select id="background-style" class="setting-input">
+            <option value="gradient">Gradient</option>
+            <option value="solid">Solid Color</option>
+            <option value="pattern">Pattern</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🖼️ Show Profile Pictures</h4>
+            <p class="setting-desc">Display user avatars in chat</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="show-avatars" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Advanced Settings Tab -->
+      <div class="settings-body" id="advanced-settings" style="display:none;">
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>⏱️ Message Delay</h4>
+            <p class="setting-desc">Delay between messages (milliseconds)</p>
+          </div>
+          <input type="number" id="message-delay" class="setting-input" value="100" min="0" max="5000">
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🔄 Auto-Refresh</h4>
+            <p class="setting-desc">Automatically refresh chat on new messages</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="auto-refresh" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🔔 Desktop Notifications</h4>
+            <p class="setting-desc">Show browser notifications for new messages</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="desktop-notifications">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>📤 Export Chat Data</h4>
+            <p class="setting-desc">Download all your chat history</p>
+          </div>
+          <button id="export-chats" class="save-settings-btn">📥 Export</button>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🗑️ Clear All Data</h4>
+            <p class="setting-desc">Delete all conversations and settings</p>
+          </div>
+          <button id="clear-all-data" class="danger-btn">🗑️ Clear Everything</button>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>⌨️ Enter Key Behavior</h4>
+            <p class="setting-desc">What happens when you press Enter</p>
+          </div>
+          <select id="enter-behavior" class="setting-input">
+            <option value="send">Send Message</option>
+            <option value="newline">New Line (Shift+Enter to Send)</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>🌐 Language Detection</h4>
+            <p class="setting-desc">Auto-detect message language</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="lang-detection">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Privacy & Terms Tab -->
+      <div class="settings-body" id="privacy-settings" style="display:none;">
+        <div class="privacy-section">
+          <h3 style="margin-bottom:16px;">📜 Privacy Policy</h3>
+          <div class="privacy-content">
+            <p><strong>Last Updated:</strong> November 7, 2025</p>
+            
+            <h4>1. Information We Collect</h4>
+            <p>We collect minimal information to provide our services:</p>
+            <ul>
+              <li>Discord profile information (username, avatar, email)</li>
+              <li>Chat messages and conversation history</li>
+              <li>Settings and preferences you configure</li>
+              <li>Usage data and analytics</li>
+            </ul>
+
+            <h4>2. How We Use Your Information</h4>
+            <p>Your information is used to:</p>
+            <ul>
+              <li>Provide AI chat services</li>
+              <li>Remember your preferences and settings</li>
+              <li>Improve our service quality</li>
+              <li>Send activity logs to Discord webhook (if configured)</li>
+            </ul>
+
+            <h4>3. Data Storage</h4>
+            <p>All your data is stored locally in your browser using localStorage. We do not store your data on our servers. Your API keys and chat history remain on your device.</p>
+
+            <h4>4. Third-Party Services</h4>
+            <p>We use the following third-party services:</p>
+            <ul>
+              <li>Discord OAuth for authentication</li>
+              <li>Groq API for AI responses</li>
+              <li>Discord Webhooks for activity logging (optional)</li>
+            </ul>
+
+            <h4>5. Your Rights</h4>
+            <p>You have the right to:</p>
+            <ul>
+              <li>Access your data at any time</li>
+              <li>Delete your data using the Clear Data button</li>
+              <li>Export your chat history</li>
+              <li>Opt out of any optional features</li>
+            </ul>
+
+            <h4>6. Security</h4>
+            <p>We implement security measures to protect your data. However, no method of transmission over the internet is 100% secure. Use strong passwords and keep your API keys confidential.</p>
+          </div>
+
+          <h3 style="margin:24px 0 16px;">📋 Terms of Service</h3>
+          <div class="privacy-content">
+            <p><strong>Effective Date:</strong> November 7, 2025</p>
+
+            <h4>1. Acceptance of Terms</h4>
+            <p>By using Cloud AI, you agree to these Terms of Service. If you disagree with any part, please do not use our service.</p>
+
+            <h4>2. Use License</h4>
+            <p>We grant you a limited, non-exclusive license to use Cloud AI for personal purposes. You may not:</p>
+            <ul>
+              <li>Modify or copy the materials</li>
+              <li>Use for commercial purposes without permission</li>
+              <li>Attempt to reverse engineer the software</li>
+              <li>Remove copyright notices</li>
+            </ul>
+
+            <h4>3. User Responsibilities</h4>
+            <p>You agree to:</p>
+            <ul>
+              <li>Provide accurate information</li>
+              <li>Keep your account credentials secure</li>
+              <li>Not use the service for illegal activities</li>
+              <li>Not abuse or spam the AI system</li>
+            </ul>
+
+            <h4>4. Service Availability</h4>
+            <p>We strive to keep Cloud AI available 24/7, but we do not guarantee uninterrupted access. We may modify or discontinue features at any time.</p>
+
+            <h4>5. Limitation of Liability</h4>
+            <p>Cloud AI is provided "as is" without warranties. We are not liable for any damages arising from your use of the service.</p>
+
+            <h4>6. Changes to Terms</h4>
+            <p>We may update these terms at any time. Continued use after changes constitutes acceptance of new terms.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Tab -->
+      <div class="settings-body" id="contact-settings" style="display:none;">
+        <div class="contact-section">
+          <div class="contact-header">
+            <div style="font-size:64px;margin-bottom:16px;">💬</div>
+            <h2>Get in Touch</h2>
+            <p style="color:#666;margin-bottom:32px;">We'd love to hear from you! Join our community or reach out for support.</p>
+          </div>
+
+          <div class="contact-card">
+            <div class="contact-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="#5865F2">
+                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+              </svg>
+            </div>
+            <h3>Join Our Discord Server</h3>
+            <p style="color:#666;margin:12px 0 20px;">Connect with other users, get support, and stay updated with the latest news!</p>
+            <a href="https://discord.gg/8ARAsv4W" target="_blank" class="discord-join-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+              </svg>
+              Join Discord Server
+            </a>
+          </div>
+
+          <div class="contact-info">
+            <div class="info-item">
+              <span style="font-size:24px;">📧</span>
+              <div>
+                <strong>Email Support</strong>
+                <p>support@cloudai.app</p>
+              </div>
+            </div>
+            <div class="info-item">
+              <span style="font-size:24px;">🌐</span>
+              <div>
+                <strong>Website</strong>
+                <p>www.cloudai.app</p>
+              </div>
+            </div>
+            <div class="info-item">
+              <span style="font-size:24px;">💻</span>
+              <div>
+                <strong>GitHub</strong>
+                <p>github.com/cloudai</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-footer">
+            <p style="text-align:center;color:#888;font-size:13px;">Cloud AI - Your Advanced AI Assistant © 2025</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM CONFIRMATION DIALOG -->
+  <div id="custom-dialog" class="custom-dialog" style="display:none;">
+    <div class="custom-dialog-content">
+      <p id="dialog-message" class="dialog-message"></p>
+      <div class="dialog-buttons">
+        <button id="dialog-cancel" class="dialog-btn cancel-btn">Cancel</button>
+        <button id="dialog-ok" class="dialog-btn ok-btn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM PROMPT DIALOG -->
+  <div id="custom-prompt-dialog" class="custom-dialog" style="display:none;">
+    <div class="custom-dialog-content">
+      <p id="prompt-message" class="dialog-message"></p>
+      <input type="text" id="prompt-input" class="prompt-input">
+      <div class="dialog-buttons">
+        <button id="prompt-cancel" class="dialog-btn cancel-btn">Cancel</button>
+        <button id="prompt-ok" class="dialog-btn ok-btn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TERMS & PRIVACY MODAL -->
+  <div id="terms-modal" class="modal" style="display:none;">
+    <div class="modal-content terms-modal-content">
+      <div class="modal-header">
+        <h3>📜 Terms of Service & Privacy Policy</h3>
+        <button id="close-terms" class="secondary">Close</button>
+      </div>
+      <div class="terms-body">
+        <h4>Terms of Service</h4>
+        <p><strong>Last Updated:</strong> November 7, 2025</p>
+        <p><strong>Effective Date:</strong> November 7, 2025</p>
+        
+        <p>Welcome to Cloud AI! These Terms of Service ("Terms") govern your access to and use of Cloud AI ("the Service"). By accessing or using the Service, you agree to be bound by these Terms. If you do not agree to these Terms, you may not use the Service.</p>
+
+        <p><strong>1. Acceptance of Terms</strong></p>
+        <p>By creating an account or using Cloud AI, you acknowledge that you have read, understood, and agree to be bound by these Terms and our Privacy Policy. These Terms apply to all users of the Service.</p>
+
+        <p><strong>2. Eligibility</strong></p>
+        <p>You must be at least 13 years old to use Cloud AI. By using the Service, you represent and warrant that you meet this age requirement. If you are under 18 years old, you must have permission from a parent or legal guardian.</p>
+
+        <p><strong>3. User Accounts</strong></p>
+        <ul>
+          <li>You access Cloud AI through Discord OAuth authentication.</li>
+          <li>You are responsible for maintaining the security and confidentiality of your Discord account.</li>
+          <li>You are responsible for all activities that occur under your account.</li>
+          <li>You must notify us immediately of any unauthorized access or security breach.</li>
+        </ul>
+
+        <p><strong>4. Acceptable Use</strong></p>
+        <p>You agree NOT to use Cloud AI to:</p>
+        <ul>
+          <li>Violate any applicable laws, regulations, or third-party rights</li>
+          <li>Engage in harassment, hate speech, or discrimination</li>
+          <li>Distribute malware, viruses, or harmful code</li>
+          <li>Attempt to gain unauthorized access to our systems</li>
+          <li>Impersonate others or provide false information</li>
+          <li>Generate or distribute illegal, harmful, or offensive content</li>
+          <li>Use the Service for any commercial purpose without authorization</li>
+        </ul>
+
+        <p><strong>5. Intellectual Property</strong></p>
+        <ul>
+          <li>You retain all rights to the content you create and submit through Cloud AI.</li>
+          <li>Cloud AI and its original content, features, and functionality are owned by the developer and are protected by international copyright, trademark, and other intellectual property laws.</li>
+          <li>You grant us a license to use your content solely for providing and improving the Service.</li>
+        </ul>
+
+        <p><strong>6. AI-Generated Content</strong></p>
+        <ul>
+          <li>AI responses are generated by third-party AI models and may not always be accurate, complete, or appropriate.</li>
+          <li>We do not guarantee the accuracy, reliability, or suitability of AI-generated content.</li>
+          <li>You use AI-generated content at your own risk and discretion.</li>
+          <li>AI responses should not be considered professional advice (legal, medical, financial, etc.).</li>
+        </ul>
+
+        <p><strong>7. Service Availability</strong></p>
+        <ul>
+          <li>The Service is provided "as is" and "as available" without warranties of any kind.</li>
+          <li>We do not guarantee that the Service will be uninterrupted, timely, secure, or error-free.</li>
+          <li>We reserve the right to modify, suspend, or discontinue the Service at any time without notice.</li>
+        </ul>
+
+        <p><strong>8. Limitation of Liability</strong></p>
+        <p>To the maximum extent permitted by law, Cloud AI and its developer shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Service.</p>
+
+        <p><strong>9. Changes to Terms</strong></p>
+        <p>We reserve the right to modify these Terms at any time. We will notify users of significant changes by updating the "Last Updated" date. Your continued use of the Service after changes constitutes acceptance of the new Terms.</p>
+
+        <p><strong>10. Termination</strong></p>
+        <p>We reserve the right to terminate or suspend your access to the Service immediately, without prior notice, for conduct that we believe violates these Terms or is harmful to other users, us, or third parties.</p>
+
+        <p><strong>11. Governing Law</strong></p>
+        <p>These Terms shall be governed by and construed in accordance with applicable laws, without regard to conflict of law provisions.</p>
+
+        <h4 style="margin-top:24px;">Privacy Policy</h4>
+        <p><strong>Last Updated:</strong> November 7, 2025</p>
+        
+        <p>This Privacy Policy explains how Cloud AI collects, uses, discloses, and safeguards your information when you use our Service.</p>
+
+        <p><strong>1. Information We Collect</strong></p>
+        
+        <p><strong>1.1 Information from Discord:</strong></p>
+        <ul>
+          <li>Username and discriminator</li>
+          <li>User ID (unique Discord identifier)</li>
+          <li>Avatar image</li>
+          <li>Email address (if provided by Discord)</li>
+          <li>Account creation date</li>
+        </ul>
+
+        <p><strong>1.2 Information You Provide:</strong></p>
+        <ul>
+          <li>First name and surname (optional)</li>
+          <li>Age (optional)</li>
+          <li>AI assistant preferences (name, personality, language)</li>
+          <li>Chat messages and conversations</li>
+          <li>Settings and preferences</li>
+        </ul>
+
+        <p><strong>1.3 Automatically Collected Information:</strong></p>
+        <ul>
+          <li>Browser type and version</li>
+          <li>Device information</li>
+          <li>Usage patterns and timestamps</li>
+          <li>Local storage data</li>
+        </ul>
+
+        <p><strong>2. How We Store Your Data</strong></p>
+        <ul>
+          <li><strong>Local Storage:</strong> All your conversations, settings, and personal data are stored locally in your browser's localStorage. We do not have a central database.</li>
+          <li><strong>Session Memory:</strong> Chat history is maintained in your browser session (up to 9,999 messages).</li>
+          <li><strong>No Server Storage:</strong> Your chat content is not permanently stored on our servers.</li>
+        </ul>
+
+        <p><strong>3. How We Use Your Information</strong></p>
+        <ul>
+          <li>To provide and maintain the Service</li>
+          <li>To personalize your AI assistant experience</li>
+          <li>To send your messages to AI providers for generating responses</li>
+          <li>To improve and optimize the Service</li>
+          <li>To monitor usage and detect potential abuse</li>
+          <li>To log authentication events via Discord webhooks (optional)</li>
+        </ul>
+
+        <p><strong>4. Third-Party Services</strong></p>
+        
+        <p><strong>4.1 Discord:</strong></p>
+        <ul>
+          <li>Used for authentication and user identification</li>
+          <li>Subject to <a href="https://discord.com/privacy" target="_blank">Discord's Privacy Policy</a></li>
+          <li>We receive limited profile information as authorized</li>
+        </ul>
+
+        <p><strong>4.2 Groq AI:</strong></p>
+        <ul>
+          <li>Your messages are sent to Groq's API for AI response generation</li>
+          <li>Subject to <a href="https://groq.com/privacy-policy/" target="_blank">Groq's Privacy Policy</a></li>
+          <li>Groq may process and store messages according to their policies</li>
+        </ul>
+
+        <p><strong>4.3 Discord Webhooks:</strong></p>
+        <ul>
+          <li>We may send login/logout events and activity logs to Discord webhooks</li>
+          <li>This includes your Discord username, ID, email, and activity timestamps</li>
+          <li>Deleted chat sessions may be logged with full content</li>
+        </ul>
+
+        <p><strong>5. Data Security</strong></p>
+        <ul>
+          <li>We implement industry-standard security measures to protect your data</li>
+          <li>Data is encrypted during transmission using HTTPS/SSL</li>
+          <li>However, no method of transmission over the Internet is 100% secure</li>
+          <li>You are responsible for keeping your Discord account credentials secure</li>
+        </ul>
+
+        <p><strong>6. Your Rights and Choices</strong></p>
+        <ul>
+          <li><strong>Access:</strong> You can view all your data stored in local storage</li>
+          <li><strong>Delete:</strong> You can delete all your data by clearing your browser's local storage or using the "Clear Data" option in settings</li>
+          <li><strong>Export:</strong> You can export your chat history using browser developer tools</li>
+          <li><strong>Opt-Out:</strong> You can disable memory features or specific data collection in settings</li>
+        </ul>
+
+        <p><strong>7. Data Retention</strong></p>
+        <ul>
+          <li>Data is retained locally in your browser until you clear it</li>
+          <li>We do not retain server-side copies of your conversations</li>
+          <li>Activity logs sent to webhooks are retained according to Discord's retention policies</li>
+        </ul>
+
+        <p><strong>8. Children's Privacy</strong></p>
+        <p>Cloud AI is not intended for children under 13. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us.</p>
+
+        <p><strong>9. International Users</strong></p>
+        <p>Your information may be transferred to and processed in countries other than your own. By using the Service, you consent to such transfers.</p>
+
+        <p><strong>10. Changes to Privacy Policy</strong></p>
+        <p>We may update this Privacy Policy from time to time. We will notify you of any changes by updating the "Last Updated" date. You are advised to review this Privacy Policy periodically.</p>
+
+        <p><strong>11. Contact Information</strong></p>
+        <p>For questions about these Terms or Privacy Policy, please contact the developer Calvin through Discord or the appropriate support channels.</p>
+
+        <p><strong>12. Your Consent</strong></p>
+        <p>By using Cloud AI, you consent to our Terms of Service and Privacy Policy and agree to their terms.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- AGREEMENT MODAL -->
+  <div id="agreement-modal" class="modal" style="display:none;">
+    <div class="custom-dialog-content agreement-modal">
+      <h3 style="margin-bottom:16px;text-align:center;">📜 Welcome to Cloud AI!</h3>
+      <p style="margin-bottom:16px;text-align:center;">Before you continue, please review and accept our terms.</p>
+      <div class="agreement-content">
+        <p><strong>By using Cloud AI, you agree to:</strong></p>
+        <ul style="margin:12px 0;padding-left:20px;line-height:1.6;">
+          <li>Our Terms of Service and Privacy Policy</li>
+          <li>Allow us to process your Discord profile for login</li>
+          <li>Send your messages to Groq API for AI responses</li>
+          <li>Store your data locally in your browser</li>
+        </ul>
+        <p style="margin-top:12px;"><a href="#" id="view-full-terms" style="color:#0f62fe;text-decoration:underline;">Read full Terms & Privacy Policy</a></p>
+      </div>
+      <div class="agreement-checkbox" style="margin:20px 0;display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="agree-checkbox" style="width:18px;height:18px;cursor:pointer;">
+        <label for="agree-checkbox" style="cursor:pointer;user-select:none;">I agree to the Terms of Service and Privacy Policy</label>
+      </div>
+      <div class="dialog-buttons" style="justify-content:center;">
+        <button id="agreement-accept" class="dialog-btn ok-btn" disabled style="width:100%;max-width:300px;">Accept & Continue ✅</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
